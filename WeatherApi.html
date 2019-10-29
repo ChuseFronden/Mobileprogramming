@@ -1,0 +1,53 @@
+<!-- Fetch astronomy picture of the day from NASA API -->
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>React getting started</title>
+  </head>
+  <body>
+    <!-- Root container for react components -->
+    <div id='root'></div>
+    
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    
+    <script type="text/babel">
+      class NetworkComponent extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {name: '', temperature: '', weatherdesc: '', icon: ''};
+        }
+
+        componentDidMount() {
+          fetch('http://api.openweathermap.org/data/2.5/weather?q=Helsinki,fi&APPID=584d37324b03c93c49482e018bd1ca95&units=metric')
+          .then((response) => response.json()) 
+          .then((responseData) => { 
+              this.setState({ 
+                name : responseData.name,
+                temperature: responseData.main.temp,
+                weatherdesc : responseData.weather[0].main,
+                icon: responseData.weather[0].icon 
+              });
+          });
+        }
+        
+        render() { 
+          const iconimg = "http://openweathermap.org/img/w/" + this.state.icon +".png"
+          return (
+            <div>
+              <div>{this.state.name}</div>
+              <div>Temperature: {this.state.temperature}&deg;</div>
+              <div>Weather: {this.state.weatherdesc}</div>
+              <div><img src={iconimg} /></div>
+            </div>
+            
+          );
+        }
+      }
+      
+      ReactDOM.render(<NetworkComponent />, document.getElementById('root'));
+    </script>
+  </body>
+</html>
